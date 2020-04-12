@@ -1,3 +1,4 @@
+# Irwin Qi Dec 2019, version 4
 from pytube import YouTube
 import nltk
 import re, string
@@ -18,17 +19,25 @@ en_caption = source.captions.get_by_language_code('en')
 srt =(en_caption.generate_srt_captions())
 
 text = ''
+removelist = ['-->', '</font>', '<font>', '<font color="#CCCCCC">', '<font color="#E5E5E5">', '<font color="#EEE">', ':','']
+removecompile = re.compile(r"\b(" + "|".join(removelist) + ")\\W", re.I)
+
+def Removesub(text):
+    global removecompile
+    return removecompile.sub(" ", text)
+
 for line in srt:
     if re.search('^[0-9]+$', line) is None and re.search('^[0-9]{2}:[0-9]{2}:[0-9]{2}', line) is None and re.search('^$', line) is None and re.search('^-->', line) is None:
         text += '' + line.rstrip('\n')
         text = text.lstrip()
-        text = text.replace('-->','')
-        text = text.replace('</font>','')
-        text = text.replace('<font>','')
-        text = text.replace('<font color="#CCCCCC">','')
-        text = text.replace('<font color="#E5E5E5">','')
-        text = text.replace('<font color="#EEE">','')
-        text = text.replace(':','')
+        #text = text.replace('-->','')
+        #text = text.replace('</font>','')
+        #text = text.replace('<font>','')
+        #text = text.replace('<font color="#CCCCCC">','')
+        #text = text.replace('<font color="#E5E5E5">','')
+        #text = text.replace('<font color="#EEE">','')
+        #text = text.replace(':','')
+        text = Removesub(text)
 for c in string.punctuation:
     text = text.replace(c,"")
     
